@@ -1,0 +1,19 @@
+name: Vota
+version: 1.0
+description: The Vota plugin allows users to easily vote for actions taken by other users.
+main: de.hapm.vota.VotePlugin
+database: true
+commands:
+  up:
+    permission: vota.vote
+    usage: "Usage: /up (Name) [Time]"
+    description: "Votes a user up"
+  down:
+    permission: vota.vote
+    usage: "Usage: /down (Name) [Time]"
+    description: "Votes a user down"
+permissions:
+  vota.approve:
+    description: "Allows you to approve a vote"
+  vota.vote:
+    description: "Allows you to vote other users"
