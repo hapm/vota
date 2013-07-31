@@ -33,7 +33,6 @@ import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.ScoreboardManager;
-import org.powermock.api.easymock.PowerMock;
 
 import com.avaje.ebean.TxIsolation;
 import com.avaje.ebean.config.ServerConfig;

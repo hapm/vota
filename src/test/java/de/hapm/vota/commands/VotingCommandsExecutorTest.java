@@ -7,7 +7,6 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import static org.easymock.EasyMock.*;
 
-import org.easymock.IAnswer;
 import org.easymock.IMocksControl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
