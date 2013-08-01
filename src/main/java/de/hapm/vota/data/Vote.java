@@ -54,7 +54,7 @@ public class Vote {
 	 * All fields are set to their defaults.
 	 */
 	public Vote() {
-		
+		timestamp = new Date();
 	}
 
 	/**
