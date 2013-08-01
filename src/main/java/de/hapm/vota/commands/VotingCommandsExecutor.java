@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import de.hapm.vota.VotaPlugin;
+import de.hapm.vota.data.Vote;
 
 /**
  * Implements all voting commands needed to vote users up or down.
@@ -36,11 +37,19 @@ public class VotingCommandsExecutor implements CommandExecutor {
 		if (voted == null)
 			return false;
 		
+		Vote v = new Vote();
+		v.setSubject(args[0]);
+		v.setVoterName(((Player)sender).getName());
+		v.setTimeSpan(600);
+		plugin.getDatabase().save(v);
 		if (command.getName().equals("up")) {
-			
+			v.setMark(100);
 		}
 		else if(command.getName().equals("down")) {
-			
+			v.setMark(-100);
+		}
+		else {
+			return false;
 		}
 		
 		return true;

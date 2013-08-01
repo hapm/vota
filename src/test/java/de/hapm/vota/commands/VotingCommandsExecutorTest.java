@@ -14,11 +14,14 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.avaje.ebean.EbeanServer;
+
 import de.hapm.vota.VotaPlugin;
 import de.hapm.vota.commands.VotingCommandsExecutor;
+import de.hapm.vota.data.Vote;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(VotaPlugin.class)
+@PrepareForTest({VotaPlugin.class, VotingCommandsExecutor.class})
 public class VotingCommandsExecutorTest {
 	@Test
 	public void testConstructor() {
@@ -28,7 +31,7 @@ public class VotingCommandsExecutorTest {
 	}
 	
 	@Test
-	public void onCommand() {
+	public void onCommand() throws Exception {
 		VotaPlugin plugin = PowerMock.createMock(VotaPlugin.class);
 		IMocksControl control = createControl();
 		Player p = control.createMock(Player.class);
@@ -68,15 +71,57 @@ public class VotingCommandsExecutorTest {
 		PowerMock.reset(plugin);
 		
 		Player p2 = control.createMock(Player.class);
+		EbeanServer ebean = control.createMock(EbeanServer.class);
+		//Vote voteStub = new Vote();
+		Vote vote = PowerMock.createMock(Vote.class);
 		expect(plugin.getServer()).andReturn(server).once();
 		expect(server.getPlayer("existingPlayer")).andReturn(p2).once();
-		expect(command.getName()).andReturn("down").anyTimes();
+		expect(command.getName()).andReturn("up").anyTimes();
+		expect(plugin.getDatabase()).andReturn(ebean);
+		PowerMock.expectNew(Vote.class).andReturn(vote).once();
+		vote.setMark(100);
+		expectLastCall();
+		vote.setSubject("existingPlayer");
+		expectLastCall();
+		expect(p.getName()).andReturn("votingPlayer");
+		vote.setVoterName("votingPlayer");
+		expectLastCall();
+		vote.setTimeSpan(600);
+		expectLastCall();
+		ebean.save(vote);
+		expectLastCall();
+
+		PowerMock.replay(plugin, vote, Vote.class);
 		control.replay();
-		PowerMock.replay(plugin);
-		assertTrue(cmds.onCommand(p, command, "down", new String[] {"existingPlayer"}));
+		assertTrue(cmds.onCommand(p, command, "up", new String[] {"existingPlayer"}));
+		PowerMock.verify(plugin, vote);
 		control.verify();
-		PowerMock.verify(plugin);
 		control.reset();
-		PowerMock.reset(plugin);
+		PowerMock.reset(plugin, vote, Vote.class);
+		
+		expect(plugin.getServer()).andReturn(server).once();
+		expect(server.getPlayer("anotherPlayer")).andReturn(p2).once();
+		expect(command.getName()).andReturn("down").anyTimes();
+		expect(plugin.getDatabase()).andReturn(ebean);
+		PowerMock.expectNew(Vote.class).andReturn(vote).once();
+		vote.setMark(-100);
+		expectLastCall();
+		vote.setSubject("anotherPlayer");
+		expectLastCall();
+		expect(p.getName()).andReturn("votingPlayer2");
+		vote.setVoterName("votingPlayer2");
+		expectLastCall();
+		vote.setTimeSpan(600);
+		expectLastCall();
+		ebean.save(vote);
+		expectLastCall();
+
+		PowerMock.replay(plugin, vote, Vote.class);
+		control.replay();
+		assertTrue(cmds.onCommand(p, command, "down", new String[] {"anotherPlayer"}));
+		PowerMock.verify(plugin, vote);
+		control.verify();
+		control.reset();
+		PowerMock.reset(plugin, vote, Vote.class);
 	}
 }
