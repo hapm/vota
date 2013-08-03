@@ -12,6 +12,10 @@
 			<url>http://repo.bukkit.org/content/groups/public</url>
 		</repository>
 	</repositories>
+	<properties>
+	   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	   <main.class>de.hapm.vota.VotaPlugin</main.class>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.bukkit</groupId>
@@ -78,6 +82,12 @@
 		</dependencies>
 	</dependencyManagement>
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -139,4 +149,7 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	<issueManagement>
+		<system>redmine</system>
+	</issueManagement>
 </project>
