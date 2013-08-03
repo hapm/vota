@@ -223,10 +223,10 @@ public class StubServer implements Server {
 	public void configureDbConfig(ServerConfig config) {
 		ServerConfig fileConfig = new ServerConfig();
 		fileConfig.loadFromProperties();
-		fileConfig.getDataSourceConfig().setUrl("jdbc:sqlite::memory:");
+		fileConfig.getDataSourceConfig().setUrl("jdbc:h2:mem:tests;DB_CLOSE_DELAY=-1");
 		fileConfig.getDataSourceConfig().setUsername("sa");
 		fileConfig.getDataSourceConfig().setPassword("");
-		fileConfig.getDataSourceConfig().setDriver("org.sqlite.JDBC");
+		fileConfig.getDataSourceConfig().setDriver("org.h2.Driver");
 		fileConfig.getDataSourceConfig().setIsolationLevel(TxIsolation.READ_UNCOMMITTED.getLevel());
 		//config.setDdlGenerate(true);
 		//config.setDdlRun(true);
