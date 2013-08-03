@@ -1,5 +1,7 @@
 package de.hapm.vota.commands;
 
+import static org.easymock.EasyMock.expectLastCall;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -38,7 +40,7 @@ public class VotingCommandsExecutor implements CommandExecutor {
 			return false;
 		
 		Vote v = new Vote();
-		v.setSubject(args[0]);
+		v.setSubject(voted.getName());
 		v.setVoterName(((Player)sender).getName());
 		v.setTimeSpan(600);
 		plugin.getDatabase().save(v);
@@ -51,6 +53,8 @@ public class VotingCommandsExecutor implements CommandExecutor {
 		else {
 			return false;
 		}
+		
+		sender.sendMessage(String.format("You voted for the actions of %s in the last 10 minutes", voted.getName()));
 		
 		return true;
 	}

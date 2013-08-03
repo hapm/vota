@@ -76,6 +76,7 @@ public class VotingCommandsExecutorTest {
 		Vote vote = PowerMock.createMock(Vote.class);
 		expect(plugin.getServer()).andReturn(server).once();
 		expect(server.getPlayer("existingPlayer")).andReturn(p2).once();
+		expect(p2.getName()).andReturn("existingPlayer").anyTimes();
 		expect(command.getName()).andReturn("up").anyTimes();
 		expect(plugin.getDatabase()).andReturn(ebean);
 		PowerMock.expectNew(Vote.class).andReturn(vote).once();
@@ -90,7 +91,8 @@ public class VotingCommandsExecutorTest {
 		expectLastCall();
 		ebean.save(vote);
 		expectLastCall();
-
+		p.sendMessage("You voted for the actions of existingPlayer in the last 10 minutes");
+		expectLastCall();
 		PowerMock.replay(plugin, vote, Vote.class);
 		control.replay();
 		assertTrue(cmds.onCommand(p, command, "up", new String[] {"existingPlayer"}));
@@ -101,12 +103,13 @@ public class VotingCommandsExecutorTest {
 		
 		expect(plugin.getServer()).andReturn(server).once();
 		expect(server.getPlayer("anotherPlayer")).andReturn(p2).once();
+		expect(p2.getName()).andReturn("anotherPlayer2").anyTimes();
 		expect(command.getName()).andReturn("down").anyTimes();
 		expect(plugin.getDatabase()).andReturn(ebean);
 		PowerMock.expectNew(Vote.class).andReturn(vote).once();
 		vote.setMark(-100);
 		expectLastCall();
-		vote.setSubject("anotherPlayer");
+		vote.setSubject("anotherPlayer2");
 		expectLastCall();
 		expect(p.getName()).andReturn("votingPlayer2");
 		vote.setVoterName("votingPlayer2");
@@ -114,6 +117,8 @@ public class VotingCommandsExecutorTest {
 		vote.setTimeSpan(600);
 		expectLastCall();
 		ebean.save(vote);
+		expectLastCall();
+		p.sendMessage("You voted for the actions of anotherPlayer2 in the last 10 minutes");
 		expectLastCall();
 
 		PowerMock.replay(plugin, vote, Vote.class);
