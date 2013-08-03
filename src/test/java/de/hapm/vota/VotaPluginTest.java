@@ -1,7 +1,9 @@
 package de.hapm.vota;
 
+import static org.easymock.EasyMock.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 import org.bukkit.command.PluginCommand;
-import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
@@ -10,6 +12,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.hapm.bukkit.JavaPluginTest;
 import de.hapm.vota.commands.VotingCommandsExecutor;
+import de.hapm.vota.data.Vote;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(PluginCommand.class)
@@ -19,19 +22,20 @@ public class VotaPluginTest extends JavaPluginTest {
 	public void testLifecycle() {
 		VotaPlugin plugin = new VotaPlugin();
 		PluginCommand commandMock = PowerMock.createMock(PluginCommand.class);
-		commandMock.setExecutor(EasyMock.anyObject(VotingCommandsExecutor.class));
-		EasyMock.expectLastCall().times(2);
-		EasyMock.expect(commandMock.getPlugin()).andReturn(plugin).anyTimes();
+		commandMock.setExecutor(anyObject(VotingCommandsExecutor.class));
+		expectLastCall().times(2);
+		expect(commandMock.getPlugin()).andReturn(plugin).anyTimes();
 		prepare(plugin);
-		EasyMock.expect(server.getPluginCommand("up")).andReturn(commandMock);
-		EasyMock.expect(server.getPluginCommand("down")).andReturn(commandMock);
-		EasyMock.replay(server);
-		EasyMock.replay(commandMock);
+		expect(server.getPluginCommand("up")).andReturn(commandMock);
+		expect(server.getPluginCommand("down")).andReturn(commandMock);
+		replay(server);
+		replay(commandMock);
 		initialize(plugin);
+		assertThat(plugin.getDatabaseClasses(), contains(new Class<?>[] {Vote.class}));
 		plugin.onEnable();
 		plugin.onDisable();
-		EasyMock.verify(commandMock);
-		EasyMock.verify(server);
+		verify(commandMock);
+		verify(server);
 	}
 
 }
