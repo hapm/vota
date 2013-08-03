@@ -1,6 +1,8 @@
 package de.hapm.vota;
 import java.util.List;
 
+import javax.persistence.PersistenceException;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.hapm.vota.commands.VotingCommandsExecutor;
@@ -19,9 +21,19 @@ public class VotaPlugin extends JavaPlugin {
 		VotingCommandsExecutor cmdExecutor = new VotingCommandsExecutor(this);
 		getCommand("up").setExecutor(cmdExecutor);
 		getCommand("down").setExecutor(cmdExecutor);
+		setupDb();
 		super.onEnable();
 	}
 	
+	private void setupDb() {
+		try {
+			getDatabase().find(Vote.class).findRowCount();
+		}
+		catch (PersistenceException ex) {
+			installDDL();
+		}
+	}
+
 	@Override
 	public List<Class<?>> getDatabaseClasses() {
 		List<Class<?>> classes = super.getDatabaseClasses();

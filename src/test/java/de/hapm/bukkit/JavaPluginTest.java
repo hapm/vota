@@ -35,7 +35,15 @@ public class JavaPluginTest {
 	}
 	
 	protected void prepare(JavaPlugin plugin) {
-		desc = new PluginDescriptionFile("test", "1.0", plugin.getClass().getName());
+		desc = loadDescriptionFile(plugin);
+		if (desc.isDatabaseEnabled()) {
+			server.configureDbConfig(anyObject(ServerConfig.class));
+			expectLastCall().andStubDelegateTo(new StubServer());
+		}
+	}
+
+	private PluginDescriptionFile loadDescriptionFile(JavaPlugin plugin) {
+		PluginDescriptionFile desc = new PluginDescriptionFile("test", "1.0", plugin.getClass().getName());
 		try {
 			InputStream ymlStream = plugin.getClass().getResourceAsStream("/plugin.yml");
 			assertNotNull(ymlStream);
@@ -43,10 +51,15 @@ public class JavaPluginTest {
 		} catch (InvalidDescriptionException e) {
 			fail("plugin.yml invalide");
 		}
-		if (desc.isDatabaseEnabled()) {
-			server.configureDbConfig(anyObject(ServerConfig.class));
-			expectLastCall().andStubDelegateTo(new StubServer());
+		
+		return desc;
+	}
+	
+	protected void checkDescriptionFile(JavaPlugin plugin) {
+		if (desc == null) {
+			desc = loadDescriptionFile(plugin);
 		}
+		
 		assertEquals(plugin.getClass().getName(), desc.getMain());
 	}
 	
