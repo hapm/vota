@@ -160,5 +160,12 @@
 	</build>
 	<issueManagement>
 		<system>redmine</system>
+		<url>http://projects.hapm.de/projects/vota</url>
 	</issueManagement>
+	<scm>
+		<url>https://github.com/HAPM/vota</url>
+		<connection>scm:git:https://github.com/HAPM/vota.git</connection>
+		<developerConnection>scm:git:https://github.com/HAPM/vota.git</developerConnection>
+		<tag>master</tag>
+	</scm>
 </project>
