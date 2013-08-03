@@ -1,7 +1,7 @@
 name: Vota
 version: 1.0
 description: The Vota plugin allows users to easily vote for actions taken by other users.
-main: de.hapm.vota.VotePlugin
+main: de.hapm.vota.VotaPlugin
 database: true
 commands:
   up:

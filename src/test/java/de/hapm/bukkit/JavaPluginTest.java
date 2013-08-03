@@ -47,6 +47,7 @@ public class JavaPluginTest {
 			server.configureDbConfig(anyObject(ServerConfig.class));
 			expectLastCall().andStubDelegateTo(new StubServer());
 		}
+		assertEquals(plugin.getClass().getName(), desc.getMain());
 	}
 	
 	protected void initialize(JavaPlugin plugin) {
