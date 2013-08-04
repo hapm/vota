@@ -6,9 +6,9 @@ import static org.junit.Assert.*;
 
 import javax.persistence.PersistenceException;
 
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
@@ -20,6 +20,8 @@ import com.avaje.ebean.EbeanServer;
 import com.avaje.ebean.Query;
 
 import de.hapm.bukkit.JavaPluginTest;
+import de.hapm.vota.commands.StatsCommandsExecutor;
+import de.hapm.vota.commands.VotingCommandsExecutor;
 import de.hapm.vota.data.Vote;
 
 @RunWith(PowerMockRunner.class)
@@ -29,16 +31,19 @@ public class VotaPluginTest extends JavaPluginTest {
 	@Test
 	public void testOnEnable() throws Exception {
 		VotaPlugin plugin = PowerMock.createPartialMockForAllMethodsExcept(VotaPlugin.class, "onEnable");
-		PluginCommand commandMock = PowerMock.createMock(PluginCommand.class);
-		expect(plugin.getCommand("up")).andReturn(commandMock);
-		expect(plugin.getCommand("down")).andReturn(commandMock);
-		commandMock.setExecutor(anyObject(CommandExecutor.class));
+		PluginCommand command = PowerMock.createMock(PluginCommand.class);
+		expect(plugin.getCommand("up")).andReturn(command);
+		expect(plugin.getCommand("down")).andReturn(command);
+		expect(plugin.getCommand("top10")).andReturn(command);
+		command.setExecutor(EasyMock.isA(VotingCommandsExecutor.class));
 		expectLastCall().times(2);
-		expect(commandMock.getPlugin()).andReturn(plugin).anyTimes();
+		command.setExecutor(EasyMock.isA(StatsCommandsExecutor.class));
+		expectLastCall();
+		expect(command.getPlugin()).andReturn(plugin).anyTimes();
 		PowerMock.expectPrivate(plugin, "setupDb");
-		PowerMock.replay(plugin, commandMock);
+		PowerMock.replay(plugin, command);
 		plugin.onEnable();
-		PowerMock.verify(plugin, commandMock);
+		PowerMock.verify(plugin, command);
 	}
 	
 	@Test

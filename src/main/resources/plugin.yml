@@ -12,8 +12,14 @@ commands:
     permission: vota.vote
     usage: "Usage: /down (Name) [Time]"
     description: "Votes a user down"
+  top10:
+    permission: vota.stats
+    usage: "Usage: /top10"
+    description: "Shows the top 10 of voted users"
 permissions:
   vota.approve:
     description: "Allows you to approve a vote"
   vota.vote:
     description: "Allows you to vote other users"
+  vota.stats:
+    description: "Allows you to display the top 10 list of voted users"

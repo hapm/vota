@@ -1,7 +1,5 @@
 package de.hapm.vota.commands;
 
-import static org.easymock.EasyMock.expectLastCall;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
