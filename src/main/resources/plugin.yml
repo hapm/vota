@@ -16,6 +16,10 @@ commands:
     permission: vota.stats
     usage: "Usage: /top10"
     description: "Shows the top 10 of voted users"
+  stats:
+    permission: vota.stats
+    usage: "Usage: /stats [Name]"
+    description: "Shows the currents marks for the given user or for the command sender if no name is given"
 permissions:
   vota.approve:
     description: "Allows you to approve a vote"

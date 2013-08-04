@@ -1,25 +1,33 @@
 package de.hapm.vota.data;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+import com.avaje.ebean.annotation.Sql;
+
 /**
  * The PlayerMarks class combines the user name, the associated mark and the approved mark in one object.
  * 
- * @author markus
+ * @author hapm
  */
+@Entity
+@Sql
 public class PlayerMarks {
 	/**
 	 * Saves the player name of the player, the marks are for.
 	 */
+	@Id
 	private String playerName;
 	
 	/**
 	 * Saves the mark the users has over all votes.
 	 */
-	private int mark;
+	private Integer mark;
 	
 	/**
 	 * Saves the mark the user has over all approved votes.s
 	 */
-	private int approvedMark;
+	private Integer approvedMark;
 
 	/**
 	 * Initializes a new instance of the PlayerMarks class.
@@ -49,6 +57,9 @@ public class PlayerMarks {
 	 * @return The mark as an integer. Values > 0 are good, < 0 are bad.
 	 */
 	public int getMark() {
+		if (mark == null)
+			return 0;
+		
 		return mark;
 	}
 
@@ -59,6 +70,9 @@ public class PlayerMarks {
 	 * @return The mark as an integer. Values > 0 are good, < 0 are bad.
 	 */
 	public int getApprovedMark() {
+		if (approvedMark == null)
+			return 0;
+		
 		return approvedMark;
 	}
 

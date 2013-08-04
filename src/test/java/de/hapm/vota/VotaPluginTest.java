@@ -4,11 +4,15 @@ import static org.easymock.EasyMock.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.persistence.PersistenceException;
 
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.easymock.EasyMock;
+import org.easymock.IMocksControl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
@@ -17,11 +21,15 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import com.avaje.ebean.EbeanServer;
+import com.avaje.ebean.Expression;
+import com.avaje.ebean.ExpressionFactory;
 import com.avaje.ebean.Query;
+import com.avaje.ebean.RawSql;
 
 import de.hapm.bukkit.JavaPluginTest;
 import de.hapm.vota.commands.StatsCommandsExecutor;
 import de.hapm.vota.commands.VotingCommandsExecutor;
+import de.hapm.vota.data.PlayerMarks;
 import de.hapm.vota.data.Vote;
 
 @RunWith(PowerMockRunner.class)
@@ -31,19 +39,22 @@ public class VotaPluginTest extends JavaPluginTest {
 	@Test
 	public void testOnEnable() throws Exception {
 		VotaPlugin plugin = PowerMock.createPartialMockForAllMethodsExcept(VotaPlugin.class, "onEnable");
-		PluginCommand command = PowerMock.createMock(PluginCommand.class);
-		expect(plugin.getCommand("up")).andReturn(command);
-		expect(plugin.getCommand("down")).andReturn(command);
-		expect(plugin.getCommand("top10")).andReturn(command);
-		command.setExecutor(EasyMock.isA(VotingCommandsExecutor.class));
+		PluginCommand voteCommand = PowerMock.createMock(PluginCommand.class);
+		PluginCommand statsCommand = PowerMock.createMock(PluginCommand.class);
+		expect(plugin.getCommand("up")).andReturn(voteCommand);
+		expect(plugin.getCommand("down")).andReturn(voteCommand);
+		expect(plugin.getCommand("top10")).andReturn(statsCommand);
+		expect(plugin.getCommand("stats")).andReturn(statsCommand);
+		voteCommand.setExecutor(EasyMock.isA(VotingCommandsExecutor.class));
 		expectLastCall().times(2);
-		command.setExecutor(EasyMock.isA(StatsCommandsExecutor.class));
-		expectLastCall();
-		expect(command.getPlugin()).andReturn(plugin).anyTimes();
+		statsCommand.setExecutor(EasyMock.isA(StatsCommandsExecutor.class));
+		expectLastCall().times(2);
+		expect(voteCommand.getPlugin()).andReturn(plugin).anyTimes();
+		expect(statsCommand.getPlugin()).andReturn(plugin).anyTimes();
 		PowerMock.expectPrivate(plugin, "setupDb");
-		PowerMock.replay(plugin, command);
+		PowerMock.replay(plugin, voteCommand, statsCommand);
 		plugin.onEnable();
-		PowerMock.verify(plugin, command);
+		PowerMock.verify(plugin, voteCommand, statsCommand);
 	}
 	
 	@Test
@@ -83,6 +94,35 @@ public class VotaPluginTest extends JavaPluginTest {
 	@Test
 	public void testGetDatabaseClasses() {
 		VotaPlugin plugin = new VotaPlugin();
-		assertThat(plugin.getDatabaseClasses(), contains(new Class<?>[] {Vote.class}));
+		assertThat(plugin.getDatabaseClasses(), contains(new Class<?>[] {Vote.class, PlayerMarks.class}));
+	}
+	
+	@Test
+	public void testFindMarks() {
+		VotaPlugin plugin = PowerMock.createPartialMockForAllMethodsExcept(VotaPlugin.class, "findMarks");
+		IMocksControl control = EasyMock.createControl();
+		EbeanServer ebean = control.createMock(EbeanServer.class);
+		ExpressionFactory expFct = control.createMock(ExpressionFactory.class);
+		Expression exp = control.createMock(Expression.class);
+		Logger log = PowerMock.createMock(Logger.class);
+		PlayerMarks mark = new PlayerMarks("testPlayerName", 10, -10);
+		@SuppressWarnings("unchecked")
+		Query<PlayerMarks> qry = control.createMock(Query.class);
+		expect(plugin.getDatabase()).andReturn(ebean);
+		expect(ebean.find(PlayerMarks.class)).andReturn(qry);
+		expect(qry.setRawSql(anyObject(RawSql.class))).andReturn(qry);
+		expect(qry.getGeneratedSql()).andReturn("[generated SQL]");
+		expect(ebean.getExpressionFactory()).andReturn(expFct);
+		expect(expFct.eq("v.subject", "testPlayerName")).andReturn(exp);
+		expect(qry.having(exp)).andReturn(qry);
+		expect(qry.findUnique()).andReturn(mark);
+		expect(plugin.getLogger()).andReturn(log);
+		log.log(anyObject(Level.class), anyObject(String.class));
+		expectLastCall().anyTimes();
+		PowerMock.replay(plugin, log);
+		control.replay();
+		assertThat(plugin.findMarks("testPlayerName"), is(mark));
+		PowerMock.verify(plugin, log);
+		control.verify();
 	}
 }
