@@ -41,7 +41,6 @@ public class VotingCommandsExecutor implements CommandExecutor {
 		v.setSubject(voted.getName());
 		v.setVoterName(((Player)sender).getName());
 		v.setTimeSpan(600);
-		plugin.getDatabase().save(v);
 		if (command.getName().equals("up")) {
 			v.setMark(100);
 		}
@@ -51,6 +50,8 @@ public class VotingCommandsExecutor implements CommandExecutor {
 		else {
 			return false;
 		}
+		
+		plugin.getDatabase().save(v);
 		
 		sender.sendMessage(String.format("You voted for the actions of %s in the last 10 minutes", voted.getName()));
 		
