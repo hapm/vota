@@ -14,6 +14,8 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.avaje.ebean.QueryIterator;
+
 import de.hapm.vota.VotaPlugin;
 import de.hapm.vota.data.PlayerMarks;
 
@@ -27,7 +29,16 @@ public class StatsCommandsExecutorTest {
 		IMocksControl control = createControl();
 		CommandSender sender = control.createMock(CommandSender.class);
 		PluginCommand command = PowerMock.createMock(PluginCommand.class);
+		PlayerMarks marks =  new PlayerMarks("player1", 10, 20);
+		@SuppressWarnings("unchecked")
+		QueryIterator<PlayerMarks> it = control.createMock(QueryIterator.class);
 		expect(command.getName()).andReturn("top10").anyTimes();
+		expect(plugin.findMarks()).andReturn(it);
+		sender.sendMessage("1. player1 (mark: 10, approved: 20)");
+		expectLastCall();
+		expect(it.hasNext()).andReturn(true);
+		expect(it.next()).andReturn(marks);
+		expect(it.hasNext()).andReturn(false);
 		PowerMock.replay(plugin, command);
 		StatsCommandsExecutor exec = new StatsCommandsExecutor(plugin);
 		assertTrue(exec.onCommand(sender, command, "top10", new String[0]));
