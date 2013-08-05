@@ -23,6 +23,8 @@ import de.hapm.vota.data.Vote;
  *
  */
 public class VotaPlugin extends JavaPlugin {	
+	private static final String SQL_SELECT_PLAYER_MARKS = "SELECT v.subject AS playerName, SUM(v.mark) AS mark, v2.mark AS approvedMark FROM Vote v LEFT OUTER JOIN (SELECT v3.subject, SUM(v3.mark) AS mark FROM Vote v3 GROUP BY v3.subject HAVING NOT v3.approver IS NULL) v2 ON v.subject = v2.subject GROUP BY v.subject, v2.mark";
+
 	@Override
 	public void onEnable() {
 		VotingCommandsExecutor votesExecutor = new VotingCommandsExecutor(this);
@@ -60,7 +62,7 @@ public class VotaPlugin extends JavaPlugin {
 	public PlayerMarks findMarks(String playerName) {
 		EbeanServer db = getDatabase();
 		Query<PlayerMarks> qry = db.find(PlayerMarks.class);
-		RawSql sql = RawSqlBuilder.parse("SELECT v.subject AS playerName, SUM(v.mark) AS mark, v2.mark AS approvedMark FROM Vote v LEFT OUTER JOIN (SELECT v3.subject, SUM(v3.mark) AS mark FROM Vote v3 GROUP BY v3.subject HAVING NOT v3.approver IS NULL) v2 ON v.subject = v2.subject GROUP BY v.subject, v2.mark").create();
+		RawSql sql = RawSqlBuilder.parse(SQL_SELECT_PLAYER_MARKS).create();
 		qry.setRawSql(sql);
 		qry.having(db.getExpressionFactory().eq("v.subject", playerName));
 		PlayerMarks result = qry.findUnique();
