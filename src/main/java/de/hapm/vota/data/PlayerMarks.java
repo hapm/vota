@@ -28,6 +28,12 @@ public class PlayerMarks {
 	 * Saves the mark the user has over all approved votes.s
 	 */
 	private Integer approvedMark;
+	
+	/**
+	 * Allow creation of uninitialized PlayerMarks.
+	 */
+	public PlayerMarks() {
+	}
 
 	/**
 	 * Initializes a new instance of the PlayerMarks class.
