@@ -1,6 +1,5 @@
 package de.hapm.vota;
 import java.util.List;
-import java.util.logging.Level;
 
 import javax.persistence.PersistenceException;
 

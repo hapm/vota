@@ -4,9 +4,6 @@ import static org.easymock.EasyMock.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.persistence.PersistenceException;
 
 import org.bukkit.command.PluginCommand;
