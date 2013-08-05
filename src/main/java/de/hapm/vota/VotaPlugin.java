@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.avaje.ebean.EbeanServer;
 import com.avaje.ebean.Query;
+import com.avaje.ebean.QueryIterator;
 import com.avaje.ebean.RawSql;
 import com.avaje.ebean.RawSqlBuilder;
 
@@ -66,7 +67,11 @@ public class VotaPlugin extends JavaPlugin {
 		qry.setRawSql(sql);
 		qry.having(db.getExpressionFactory().eq("v.subject", playerName));
 		PlayerMarks result = qry.findUnique();
-		getLogger().log(Level.INFO, String.format("SQL: %s", qry.getGeneratedSql()));
 		return result;
+	}
+
+	public QueryIterator<PlayerMarks> findMarks() {
+		RawSql sql = RawSqlBuilder.parse(SQL_SELECT_PLAYER_MARKS).create();
+		return getDatabase().find(PlayerMarks.class).setRawSql(sql).order().desc("mark").findIterate();
 	}
 }
