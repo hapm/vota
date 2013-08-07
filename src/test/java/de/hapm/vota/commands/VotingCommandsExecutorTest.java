@@ -31,7 +31,7 @@ public class VotingCommandsExecutorTest {
 	}
 	
 	@Test
-	public void onCommand() throws Exception {
+	public void onCommandUp() throws Exception {
 		VotaPlugin plugin = PowerMock.createMock(VotaPlugin.class);
 		IMocksControl control = createControl();
 		Player p = control.createMock(Player.class);
@@ -59,20 +59,8 @@ public class VotingCommandsExecutorTest {
 		control.reset();
 		PowerMock.reset(plugin);
 		
-		expect(plugin.getServer()).andReturn(server).once();
-		expect(server.getPlayer("noPlayer")).andReturn(null).once();
-		expect(command.getName()).andReturn("down").anyTimes();
-		control.replay();
-		PowerMock.replay(plugin);
-		assertFalse(cmds.onCommand(p, command, "down", new String[] {"noPlayer"}));
-		control.verify();
-		PowerMock.verify(plugin);
-		control.reset();
-		PowerMock.reset(plugin);
-		
 		Player p2 = control.createMock(Player.class);
 		EbeanServer ebean = control.createMock(EbeanServer.class);
-		//Vote voteStub = new Vote();
 		Vote vote = PowerMock.createMock(Vote.class);
 		expect(plugin.getServer()).andReturn(server).once();
 		expect(server.getPlayer("existingPlayer")).andReturn(p2).once();
@@ -100,7 +88,30 @@ public class VotingCommandsExecutorTest {
 		control.verify();
 		control.reset();
 		PowerMock.reset(plugin, vote, Vote.class);
-		
+	}
+
+	@Test
+	public void testOnCommandDown() throws Exception {
+		VotaPlugin plugin = PowerMock.createMock(VotaPlugin.class);
+		IMocksControl control = createControl();
+		Player p = control.createMock(Player.class);
+		Command command = control.createMock(Command.class);
+		Server server = control.createMock(Server.class);
+		expect(plugin.getServer()).andReturn(server).once();
+		expect(server.getPlayer("noPlayer")).andReturn(null).once();
+		expect(command.getName()).andReturn("down").anyTimes();
+		control.replay();
+		PowerMock.replay(plugin);
+		VotingCommandsExecutor cmds = new VotingCommandsExecutor(plugin);
+		assertFalse(cmds.onCommand(p, command, "down", new String[] {"noPlayer"}));
+		control.verify();
+		PowerMock.verify(plugin);
+		control.reset();
+		PowerMock.reset(plugin);
+
+		Player p2 = control.createMock(Player.class);
+		EbeanServer ebean = control.createMock(EbeanServer.class);
+		Vote vote = PowerMock.createMock(Vote.class);
 		expect(plugin.getServer()).andReturn(server).once();
 		expect(server.getPlayer("anotherPlayer")).andReturn(p2).once();
 		expect(p2.getName()).andReturn("anotherPlayer2").anyTimes();
