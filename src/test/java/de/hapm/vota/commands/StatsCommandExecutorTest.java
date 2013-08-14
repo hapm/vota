@@ -21,7 +21,7 @@ import de.hapm.vota.data.PlayerMarks;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({VotaPlugin.class, PluginCommand.class})
-public class StatsCommandsExecutorTest {
+public class StatsCommandExecutorTest {
 
 	@Test
 	public void testOnCommandTop10() {
@@ -40,7 +40,7 @@ public class StatsCommandsExecutorTest {
 		expect(it.next()).andReturn(marks);
 		expect(it.hasNext()).andReturn(false);
 		PowerMock.replay(plugin, command);
-		StatsCommandsExecutor exec = new StatsCommandsExecutor(plugin);
+		StatsCommandExecutor exec = new StatsCommandExecutor(plugin);
 		assertTrue(exec.onCommand(sender, command, "top10", new String[0]));
 		PowerMock.verify(plugin, command);
 	}
@@ -59,7 +59,7 @@ public class StatsCommandsExecutorTest {
 		expectLastCall();
 		PowerMock.replay(plugin, command);
 		control.replay();
-		StatsCommandsExecutor exec = new StatsCommandsExecutor(plugin);
+		StatsCommandExecutor exec = new StatsCommandExecutor(plugin);
 		assertTrue(exec.onCommand(sender, command, "stats", new String[0]));
 		PowerMock.verify(plugin, command);
 		control.verify();
@@ -73,7 +73,7 @@ public class StatsCommandsExecutorTest {
 		expectLastCall();
 		PowerMock.replay(plugin, command);
 		control.replay();
-		exec = new StatsCommandsExecutor(plugin);
+		exec = new StatsCommandExecutor(plugin);
 		assertTrue(exec.onCommand(sender, command, "stats", new String[0]));
 		PowerMock.verify(plugin, command);
 		control.verify();

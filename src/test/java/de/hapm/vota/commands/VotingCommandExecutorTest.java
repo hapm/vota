@@ -17,16 +17,16 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.avaje.ebean.EbeanServer;
 
 import de.hapm.vota.VotaPlugin;
-import de.hapm.vota.commands.VotingCommandsExecutor;
+import de.hapm.vota.commands.VotingCommandExecutor;
 import de.hapm.vota.data.Vote;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({VotaPlugin.class, VotingCommandsExecutor.class})
-public class VotingCommandsExecutorTest {
+@PrepareForTest({VotaPlugin.class, VotingCommandExecutor.class})
+public class VotingCommandExecutorTest {
 	@Test
 	public void testConstructor() {
 		VotaPlugin plugin = PowerMock.createMock(VotaPlugin.class);
-		VotingCommandsExecutor cmds = new VotingCommandsExecutor(plugin);
+		VotingCommandExecutor cmds = new VotingCommandExecutor(plugin);
 		assertNotNull(cmds);
 	}
 	
@@ -41,7 +41,7 @@ public class VotingCommandsExecutorTest {
 		
 		control.replay();
 		PowerMock.replay(plugin);
-		VotingCommandsExecutor cmds = new VotingCommandsExecutor(plugin);
+		VotingCommandExecutor cmds = new VotingCommandExecutor(plugin);
 		assertFalse(cmds.onCommand(p, command, "up", new String[0]));
 		control.verify();
 		PowerMock.verify(plugin);
@@ -102,7 +102,7 @@ public class VotingCommandsExecutorTest {
 		expect(command.getName()).andReturn("down").anyTimes();
 		control.replay();
 		PowerMock.replay(plugin);
-		VotingCommandsExecutor cmds = new VotingCommandsExecutor(plugin);
+		VotingCommandExecutor cmds = new VotingCommandExecutor(plugin);
 		assertFalse(cmds.onCommand(p, command, "down", new String[] {"noPlayer"}));
 		control.verify();
 		PowerMock.verify(plugin);

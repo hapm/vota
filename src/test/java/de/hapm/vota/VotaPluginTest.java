@@ -26,8 +26,8 @@ import com.avaje.ebean.QueryIterator;
 import com.avaje.ebean.RawSql;
 
 import de.hapm.bukkit.JavaPluginTest;
-import de.hapm.vota.commands.StatsCommandsExecutor;
-import de.hapm.vota.commands.VotingCommandsExecutor;
+import de.hapm.vota.commands.StatsCommandExecutor;
+import de.hapm.vota.commands.VotingCommandExecutor;
 import de.hapm.vota.data.PlayerMarks;
 import de.hapm.vota.data.Vote;
 
@@ -44,9 +44,9 @@ public class VotaPluginTest extends JavaPluginTest {
 		expect(plugin.getCommand("down")).andReturn(voteCommand);
 		expect(plugin.getCommand("top10")).andReturn(statsCommand);
 		expect(plugin.getCommand("stats")).andReturn(statsCommand);
-		voteCommand.setExecutor(EasyMock.isA(VotingCommandsExecutor.class));
+		voteCommand.setExecutor(EasyMock.isA(VotingCommandExecutor.class));
 		expectLastCall().times(2);
-		statsCommand.setExecutor(EasyMock.isA(StatsCommandsExecutor.class));
+		statsCommand.setExecutor(EasyMock.isA(StatsCommandExecutor.class));
 		expectLastCall().times(2);
 		expect(voteCommand.getPlugin()).andReturn(plugin).anyTimes();
 		expect(statsCommand.getPlugin()).andReturn(plugin).anyTimes();

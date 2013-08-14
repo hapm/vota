@@ -14,11 +14,11 @@ import de.hapm.vota.data.PlayerMarks;
  * 
  * @author hapm
  */
-public class StatsCommandsExecutor implements CommandExecutor {
+public class StatsCommandExecutor implements CommandExecutor {
 
 	private VotaPlugin plugin;
 
-	public StatsCommandsExecutor(VotaPlugin plugin) {
+	public StatsCommandExecutor(VotaPlugin plugin) {
 		this.plugin = plugin;
 	}
 

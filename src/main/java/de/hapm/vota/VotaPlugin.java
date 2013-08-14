@@ -11,8 +11,8 @@ import com.avaje.ebean.QueryIterator;
 import com.avaje.ebean.RawSql;
 import com.avaje.ebean.RawSqlBuilder;
 
-import de.hapm.vota.commands.StatsCommandsExecutor;
-import de.hapm.vota.commands.VotingCommandsExecutor;
+import de.hapm.vota.commands.StatsCommandExecutor;
+import de.hapm.vota.commands.VotingCommandExecutor;
 import de.hapm.vota.data.PlayerMarks;
 import de.hapm.vota.data.Vote;
 
@@ -27,8 +27,8 @@ public class VotaPlugin extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		VotingCommandsExecutor votesExecutor = new VotingCommandsExecutor(this);
-		StatsCommandsExecutor statsExecutor = new StatsCommandsExecutor(this);
+		VotingCommandExecutor votesExecutor = new VotingCommandExecutor(this);
+		StatsCommandExecutor statsExecutor = new StatsCommandExecutor(this);
 		getCommand("up").setExecutor(votesExecutor);
 		getCommand("down").setExecutor(votesExecutor);
 		getCommand("top10").setExecutor(statsExecutor);

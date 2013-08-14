@@ -13,18 +13,18 @@ import de.hapm.vota.data.Vote;
  * 
  * @author hapm
  */
-public class VotingCommandsExecutor implements CommandExecutor {
+public class VotingCommandExecutor implements CommandExecutor {
 	/**
 	 * Saves the plugin instance.
 	 */
 	private VotaPlugin plugin;
 	
 	/**
-	 * Initializes a new instance of the {@link VotingCommandsExecutor} class.
+	 * Initializes a new instance of the {@link VotingCommandExecutor} class.
 	 *  
 	 * @param plugin The VotaPlugin instance, this executor is initialized for.
 	 */
-	public VotingCommandsExecutor(VotaPlugin plugin) {
+	public VotingCommandExecutor(VotaPlugin plugin) {
 		this.plugin = plugin;
 	}
 
