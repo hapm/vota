@@ -18,6 +18,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import com.avaje.ebean.EbeanServer;
+import com.avaje.ebean.Expr;
 import com.avaje.ebean.Expression;
 import com.avaje.ebean.ExpressionFactory;
 import com.avaje.ebean.OrderBy;
@@ -32,7 +33,7 @@ import de.hapm.vota.data.PlayerMarks;
 import de.hapm.vota.data.Vote;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({PluginCommand.class, VotaPlugin.class, JavaPlugin.class, OrderBy.class})
+@PrepareForTest({PluginCommand.class, VotaPlugin.class, JavaPlugin.class, OrderBy.class, Expr.class})
 public class VotaPluginTest extends JavaPluginTest {
 	
 	@Test
@@ -140,6 +141,43 @@ public class VotaPluginTest extends JavaPluginTest {
 		PowerMock.replay(plugin);
 		control.replay();
 		assertThat(plugin.findMarks(), is(it));
+		PowerMock.verify(plugin);
+		control.verify();
+	}
+	
+	@Test
+	public void testFindVotes() {
+		VotaPlugin plugin = PowerMock.createPartialMockForAllMethodsExcept(VotaPlugin.class, "findVotes");
+		IMocksControl control = EasyMock.createControl();
+		EbeanServer ebean = control.createMock(EbeanServer.class);
+		@SuppressWarnings("unchecked")
+		QueryIterator<Vote> it = control.createMock(QueryIterator.class);
+		@SuppressWarnings("unchecked")
+		Query<Vote> qry = control.createMock(Query.class);
+		PowerMock.mockStatic(Expr.class);
+		Expression exp = control.createMock(Expression.class);
+		expect(Expr.eq("isApproved", true)).andReturn(exp);
+		expect(plugin.getDatabase()).andReturn(ebean);
+		expect(ebean.find(Vote.class)).andReturn(qry);
+		expect(qry.where(exp)).andReturn(qry);
+		expect(qry.findIterate()).andReturn(it);
+		PowerMock.replay(plugin, Expr.class);
+		control.replay();
+		assertThat(plugin.findVotes(true), is(it));
+		PowerMock.verify(plugin);
+		control.verify();
+		PowerMock.reset(plugin, Expr.class);
+		control.reset();
+		
+		exp = control.createMock(Expression.class);
+		expect(Expr.eq("isApproved", false)).andReturn(exp);
+		expect(plugin.getDatabase()).andReturn(ebean);
+		expect(ebean.find(Vote.class)).andReturn(qry);
+		expect(qry.where(exp)).andReturn(qry);
+		expect(qry.findIterate()).andReturn(it);
+		PowerMock.replay(plugin, Expr.class);
+		control.replay();
+		assertThat(plugin.findVotes(false), is(it));
 		PowerMock.verify(plugin);
 		control.verify();
 	}

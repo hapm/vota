@@ -6,6 +6,7 @@ import javax.persistence.PersistenceException;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.avaje.ebean.EbeanServer;
+import com.avaje.ebean.Expr;
 import com.avaje.ebean.Query;
 import com.avaje.ebean.QueryIterator;
 import com.avaje.ebean.RawSql;
@@ -72,5 +73,9 @@ public class VotaPlugin extends JavaPlugin {
 	public QueryIterator<PlayerMarks> findMarks() {
 		RawSql sql = RawSqlBuilder.parse(SQL_SELECT_PLAYER_MARKS).create();
 		return getDatabase().find(PlayerMarks.class).setRawSql(sql).order().desc("mark").findIterate();
+	}
+
+	public QueryIterator<Vote> findVotes(boolean isApproved) {
+		return getDatabase().find(Vote.class).where(Expr.eq("isApproved", isApproved)).findIterate();
 	}
 }
